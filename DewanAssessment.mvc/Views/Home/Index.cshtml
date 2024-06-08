@@ -6,3 +6,185 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt System</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .item-row {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Receipt System</h1>
+        <div class="item-row">
+            <label for="item-name">Item Name:</label>
+            <input type="text" id="item-name">
+        </div>
+        <div class="item-row">
+            <label for="item-price">Price:</label>
+            <input type="number" id="item-price" step="0.01">
+        </div>
+        <div class="item-row">
+            <label for="item-quantity">Quantity:</label>
+            <input type="number" id="item-quantity" value="1">
+        </div>
+        <button onclick="addItem()">Add Item</button>
+
+        <h2>Receipt</h2>
+        <ul id="receipt-items"></ul>
+        <div id="total"></div>
+
+        <div class="item-row">
+            <label for="paid-amount">Paid Amount:</label>
+            <input type="number" id="paid-amount" step="0.01">
+        </div>
+        <button onclick="calculateRemainingAmount()">Calculate Remaining Amount</button>
+        <div id="remaining-amount"></div>
+    </div>
+
+    <script>
+        let receiptItems = [];
+        
+        function addItem() {
+            let name = document.getElementById("item-name").value;
+            let price = parseFloat(document.getElementById("item-price").value);
+            let quantity = parseInt(document.getElementById("item-quantity").value);
+
+            let item = { name, price, quantity };
+            receiptItems.push(item);
+
+            updateReceipt();
+        }
+
+        function updateReceipt() {
+            let total = 0;
+            let receiptItemsHtml = "";
+
+            for (let item of receiptItems) {
+                let subtotal = item.price * item.quantity;
+                receiptItemsHtml += `<li>${item.name} - $${item.price} x ${item.quantity} = $${subtotal.toFixed(2)}</li>`;
+                total += subtotal;
+            }
+
+            document.getElementById("receipt-items").innerHTML = receiptItemsHtml;
+            document.getElementById("total").innerText = `Total: $${total.toFixed(2)}`;
+        }
+
+        function calculateRemainingAmount() {
+            let total = 0;
+            for (let item of receiptItems) {
+                total += item.price * item.quantity;
+            }
+
+            let paidAmount = parseFloat(document.getElementById("paid-amount").value);
+            let remainingAmount = total - paidAmount;
+
+            document.getElementById("remaining-amount").innerText = `Remaining Amount: $${remainingAmount.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt System</title>
+</head>
+<body>
+    <h1>Receipt System</h1>
+
+    <div id="items">
+        <!-- Items will be dynamically added here -->
+    </div>
+
+    <hr>
+
+    <div>
+        <label for="itemName">Item Name: </label>
+        <input type="text" id="itemName">
+        <label for="itemPrice">Price: </label>
+        <input type="number" id="itemPrice">
+        <button onclick="addItem()">Add Item</button>
+    </div>
+
+    <hr>
+
+    <div>
+        <label for="total">Total: $</label>
+        <span id="total">0</span>
+    </div>
+
+    <div>
+        <label for="paidAmount">Paid Amount: $</label>
+        <input type="number" id="paidAmount">
+        <button onclick="calculateRemaining()">Calculate Remaining</button>
+    </div>
+
+    <div>
+        <label for="remainingAmount">Remaining Amount: $</label>
+        <span id="remainingAmount">0</span>
+    </div>
+
+    <script>
+        let items = [];
+        let total = 0;
+
+        function addItem() {
+            const itemName = document.getElementById("itemName").value;
+            const itemPrice = parseFloat(document.getElementById("itemPrice").value);
+
+            if (isNaN(itemPrice) || itemPrice <= 0) {
+                alert("Please enter a valid price for the item.");
+                return;
+            }
+
+            items.push({ name: itemName, price: itemPrice });
+            updateReceipt();
+        }
+
+        function updateReceipt() {
+            const itemsDiv = document.getElementById("items");
+            itemsDiv.innerHTML = "";
+
+            total = 0;
+
+            items.forEach(item => {
+                const itemDiv = document.createElement("div");
+                itemDiv.textContent = `${item.name}: $${item.price}`;
+                itemsDiv.appendChild(itemDiv);
+
+                total += item.price;
+            });
+
+            document.getElementById("total").textContent = total.toFixed(2);
+        }
+
+        function calculateRemaining() {
+            const paidAmount = parseFloat(document.getElementById("paidAmount").value);
+
+            if (isNaN(paidAmount) || paidAmount < total) {
+                alert("Please enter a valid paid amount.");
+                return;
+            }
+
+            const remainingAmount = paidAmount - total;
+            document.getElementById("remainingAmount").textContent = remainingAmount.toFixed(2);
+        }
+    </script>
+</body>
+</html>
