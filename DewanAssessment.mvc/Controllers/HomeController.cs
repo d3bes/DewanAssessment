@@ -1,21 +1,34 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using DewanAssessment.mvc.Models;
+using DewanAssessment.mvc.Ripository;
+using DewanAssessment.mvc.ViewModels;
+using AutoMapper;
 
 namespace DewanAssessment.mvc.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private IMapper _mapper;
+    private  IBaseRipository<Item> _baseRipository { get;  set; }
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(IBaseRipository<Item> baseRipository, IMapper mapper , ILogger<HomeController> logger)
     {
+        _baseRipository = baseRipository;
+        _mapper = mapper;
         _logger = logger;
+
     }
 
-    public IActionResult Index()
+   
+
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var items = await _baseRipository.GetAllAsync();
+      
+        var result = _mapper.Map<List<ItemVM>>(items);
+        return View(items);
     }
 
     public IActionResult Privacy()
