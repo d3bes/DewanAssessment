@@ -3,12 +3,28 @@ using System.Reflection.Emit;
 using System.Reflection.Metadata;
 using System;
 using System.Collections.Immutable;
-using DewanAssessment.mvc.Views.Context;
+// using Microsoft.EntityFrameworkCore;
+using DewanAssessment.mvc.Context;
+using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.EntityFrameworkCore;
+using DewanAssessment.mvc.Ripository;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("mysql");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
+
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped(typeof(IBaseRipository<>),typeof(BaseRipository<>));
 
 
 var app = builder.Build();
@@ -21,17 +37,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var connectionString = builder.Configuration.GetConnectionString("mysql");
-
 // builder.Services.AddDbContext<AppDbContext>(options =>
-//     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)),
-    ServiceLifetime.Scoped); // Adjust lifetime as needed
+//     options.UseMySql(connectionString , ServerVersion.AutoDetect(connectionString))); //  ServiceLifetime.Scoped);  Adjust lifetime as needed
 
 // builder.Services.AddDbContext<AppDbContext>(options =>
 //  options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
