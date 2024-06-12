@@ -1,0 +1,243 @@
+@model List<ItemVM>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (  TempData["duplicate"] != null)
+{
+
+    <div class="alert alert-dismissible alert-primary">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong>Oh snap!</strong> There may be a duplicate.
+    </div>
+}
+
+<style>
+    .scrollable-table-wrapper {
+        max-height: 60vh;
+        /* Adjust height as needed */
+        overflow-y: auto;
+    }
+
+    .scrollable-table-wrapper::-webkit-scrollbar {
+        width: 10px;
+        /* Width of the scrollbar */
+    }
+
+    .scrollable-table-wrapper::-webkit-scrollbar-track {
+        background-color: transparent;
+        /* Transparent background */
+    }
+
+    .scrollable-table-wrapper::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.3);
+        /* Transparent with some opacity */
+        border-radius: 5px;
+        /* Rounded corners */
+    }
+
+    #AddItemDiv {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row justify-content-center py-2">
+        <div class="col-sm-12">
+            <div class="scrollable-table-wrapper">
+                <table id="myTable" class="table table-striped">
+                    <thead>
+                        <tr class="table-light text-center">
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="table-secondary">
+                                <th scope="col">@item.Id</th>
+                                <td>@item.Name</td>
+                                <td>@item.Price $</td>
+                                <td>@item.Quantity</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#EdiModal-@item.Id"> <i
+                                                class="bi bi-pencil-square"></i> </button>
+                                        <button type="button" class="btn btn-outline-dark btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#AddModal-@item.Id">add item</button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#RemoveModal-@item.Id"> <i
+                                                class="bi bi-trash3-fill"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Add Modal -->
+                            <div class="modal fade" id="AddModal-@item.Id">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"> Add Item @item.Name to Transaction </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div>
+                                                <label for="quantity" class="col-sm-2 col-form-label">Quantity</label>
+                                                <input type="number" class="form-control" placeholder="1" id="quantity">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-dark">Save changes</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Edit Modal -->
+                            <div class="modal fade" id="EdiModal-@item.Id">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"> Edit Item @item.Name </h5>
+
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <form asp-action="UpdateItem" asp-controller="Item" method="post">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label asp-for="@item.Id" name="Id"
+                                                        class="col-sm-2 col-form-label">Id</label>
+                                                    <input type="text" class="form-control form-control-sm"
+                                                        asp-for="@item.Id" name="Id" readonly />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label asp-for="@item.Name" name="Name"
+                                                        class="col-sm-2 col-form-label">Name</label>
+                                                    <input type="text" class="form-control form-control-sm"
+                                                        asp-for="@item.Name" name="Name" required />
+                                                <span asp-validation-for="@item.Name" class="text-danger"></span>
+
+                                                </div>
+                                                <div>
+                                                    <label asp-for="@item.Quantity" name="Quantity"
+                                                        class="col-sm-2 col-form-label">Quantity</label>
+                                                    <input type="number" class="form-control form-control-sm"
+                                                        asp-for="@item.Quantity" name="Quantity" required/>
+                                                <span asp-validation-for="@item.Quantity" class="text-danger"></span>
+
+                                                </div>
+                                                <div>
+                                                    <label asp-for="@item.Price" name="Price"
+                                                        class="col-sm-2 col-form-label">Price</label>
+                                                    <input type="number" class="form-control form-control-sm"
+                                                        asp-for="@item.Price" name="Price"  required/>
+                                                <span asp-validation-for="@item.Price" class="text-danger"></span>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-dark">Save changes</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Remove Modal -->
+                            <div class="modal fade" id="RemoveModal-@item.Id">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"> Remove Item </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure to remove item @item.Name ? </p>
+                                        </div>
+                                        <form asp-action="RemoveItem" asp-controller="Item" method="post">
+                                            <input type="number" class="form-control form-control-sm"
+                                                asp-for="@item.Id" name="Id" hidden />
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">remove changes</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="AddItemDiv">
+    <button type="button" id="AddItemBtn" class="btn btn-warning btn-lg" data-bs-toggle="modal"
+        data-bs-target="#AddItemModal">add item</button>
+</div>
+
+
+<!--Add Item Modal -->
+<div class="modal fade" id="AddItemModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> Add New Item </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form asp-action="AddItem" asp-controller="Item" method="post">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label name="Name" class="col-sm-2 col-form-label">Name</label>
+                        <input type="text" class="form-control form-control-sm" id="Name" name="Name"  required/>
+
+                    </div>
+                    <div>
+                        <label name="Quantity" class="col-sm-2 col-form-label">Quantity</label>
+                        <input type="number" class="form-control form-control-sm" id="Quantity" name="Quantity" required />
+                    </div>
+                    <div>
+                        <label name="Price" class="col-sm-2 col-form-label">Price</label>
+                        <input type="number" class="form-control form-control-sm" id="Price" name="Price" required />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-dark">Add Item </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+         
+    }
+
