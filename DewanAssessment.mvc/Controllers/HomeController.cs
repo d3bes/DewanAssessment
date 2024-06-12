@@ -10,7 +10,7 @@ namespace DewanAssessment.mvc.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private IMapper _mapper;
+    private IMapper _mapper {get;set;}
     private  IBaseRipository<Item> _baseRipository { get;  set; }
 
     public HomeController(IBaseRipository<Item> baseRipository, IMapper mapper , ILogger<HomeController> logger)
@@ -21,14 +21,18 @@ public class HomeController : Controller
 
     }
 
-   
 
-    public async Task<IActionResult> Index()
+
+    public IActionResult Index()
     {
-        var items = await _baseRipository.GetAllAsync();
-      
-        var result = _mapper.Map<List<ItemVM>>(items);
-        return View(items);
+
+        // var items = await _baseRipository.GetAllAsync();
+
+        // var result = _mapper.Map<List<ItemVM>>(items);
+
+
+        // return View(result);
+    return  RedirectToAction("Index", "Item");
     }
 
     public IActionResult Privacy()
