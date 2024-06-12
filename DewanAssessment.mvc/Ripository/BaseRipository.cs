@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DewanAssessment.mvc.Context;
+using DewanAssessment.mvc.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DewanAssessment.mvc.Ripository
@@ -40,7 +41,13 @@ namespace DewanAssessment.mvc.Ripository
         {
            return  await _context.Set<T>().FindAsync(id);
              
-        
+        }
+    
+        public async Task<bool> GetByIdBoolAsync(string name)
+        {
+            var item =  await _context.Set<Item>().FirstOrDefaultAsync(item => item.Name == name);
+                return item!=null;
+
         }
 
         public async Task<bool> UpdateAsync(T item)

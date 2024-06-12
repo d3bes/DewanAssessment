@@ -13,6 +13,8 @@ namespace DewanAssessment.mvc.Ripository
         Task<T> Add (T item);
         Task<bool> UpdateAsync (T item);
         bool Delete (T item);
+        Task<bool> GetByIdBoolAsync(string name);
+
         
     }
     
