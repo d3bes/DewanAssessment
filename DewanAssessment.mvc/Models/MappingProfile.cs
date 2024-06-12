@@ -13,6 +13,7 @@ namespace DewanAssessment.mvc.Models
         public MappingProfile()
         {
          CreateMap<Item,ItemVM>();   
+          CreateMap<ItemVM, Item>();
         }
         
     }
