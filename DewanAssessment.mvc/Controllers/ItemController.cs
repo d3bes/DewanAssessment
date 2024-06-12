@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using DewanAssessment.mvc.Models;
+using DewanAssessment.mvc.Ripository;
+using DewanAssessment.mvc.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,21 +16,67 @@ namespace DewanAssessment.mvc.Controllers
     public class ItemController : Controller
     {
         private readonly ILogger<ItemController> _logger;
+        private IMapper _mapper {get;set;}
+    private  IBaseRipository<Item> _baseRipository { get;  set; }
 
-        public ItemController(ILogger<ItemController> logger)
+
+        public ItemController(IBaseRipository<Item> baseRipository, IMapper mapper , ILogger<ItemController> logger)
+    {
+        _baseRipository = baseRipository;
+        _mapper = mapper;
+        _logger = logger;
+
+    }
+
+        public async Task<IActionResult> Index()
         {
-            _logger = logger;
+           var items = await _baseRipository.GetAllAsync();
+      
+        var result = _mapper.Map<List<ItemVM>>(items);
+       
+ 
+        return View(result);
+        }
+        
+        public async Task<IActionResult> UpdateItem (ItemVM itemVM)
+        {
+
+            var item = _mapper.Map<Item>(itemVM);
+            await _baseRipository.UpdateAsync(item);
+            return RedirectToAction("Index");
+
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> AddItem (ItemVM itemVM)
         {
-            return View();
+            
+            var item = _mapper.Map<Item>(itemVM);
+            if(! await _baseRipository.GetByIdBoolAsync(item.Name))
+            {
+            await _baseRipository.Add(item);
+
+
+            return RedirectToAction("Index");
+
+            }
+            
+            TempData["duplicate"] = "may there is a duplicate"; // Set your TempData here
+        
+            return RedirectToAction("Index");
+            
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public  async Task<IActionResult> RemoveItem (int id)
         {
-            return View("Error!");
+            var item = await _baseRipository.GetByIdAsync(id);
+    
+            _baseRipository.Delete(item);
+        
+        return RedirectToAction("Index");
+
+            
         }
+
+
     }
 }
