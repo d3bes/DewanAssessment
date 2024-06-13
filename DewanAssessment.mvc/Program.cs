@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Text;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
@@ -25,7 +26,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped(typeof(IBaseRipository<>),typeof(BaseRipository<>));
-
+builder.Services.AddSession(options => {
+    options.Cookie.Name = "Cart";
+    options.IdleTimeout = TimeSpan.FromHours(24);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+}
+);
 
 var app = builder.Build();
 
@@ -47,7 +54,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
