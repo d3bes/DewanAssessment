@@ -8,6 +8,8 @@ using DewanAssessment.mvc.Models;
 using DewanAssessment.mvc.Ripository;
 using DewanAssessment.mvc.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic; // Ensure this is not conflicting with your model type
+
 using Microsoft.Extensions.Logging;
 
 namespace DewanAssessment.mvc.Controllers
@@ -33,7 +35,7 @@ namespace DewanAssessment.mvc.Controllers
            var items = await _baseRipository.GetAllAsync();
       
         var result = _mapper.Map<List<ItemVM>>(items);
-       
+    
  
         return View(result);
         }
@@ -60,7 +62,7 @@ namespace DewanAssessment.mvc.Controllers
 
             }
             
-            TempData["duplicate"] = "may there is a duplicate"; // Set your TempData here
+            TempData["duplicate"] = "may there is a duplicate"; 
         
             return RedirectToAction("Index");
             
