@@ -14,6 +14,8 @@ namespace DewanAssessment.mvc.Models
         {
          CreateMap<Item,ItemVM>();   
           CreateMap<ItemVM, Item>();
+          CreateMap<CartItemVM,Item>();
+          CreateMap<Item,CartItemVM>();
         }
         
     }
