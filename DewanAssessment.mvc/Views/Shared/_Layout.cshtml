@@ -22,15 +22,22 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item">
+        @* <li class="nav-item">
           <a class="nav-link active" href="#">Home
             <span class="visually-hidden">(current)</span>
           </a>
-        </li>
-       @* <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
+        </li> *@
+        
         <li class="nav-item">
+             <form asp-action="GetCookieAndSendList" asp-controller="Cart" method="post">
+
+          <button type="button" class="btn btn-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas"> 
+       
+          <i class="bi bi-cart-fill"></i>
+          </button>
+            </form>
+        </li>
+       @*  <li class="nav-item">
           <a class="nav-link" href="#">Pricing</a>
         </li>
         <li class="nav-item">

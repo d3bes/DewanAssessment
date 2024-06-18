@@ -1,0 +1,58 @@
+@model List<CartItemVMs>
+
+@{
+    ViewData["Title"] = "_offCanvas";
+}
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasLabel">Offcanvas</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div>
+      @foreach(var item in Model)
+      {
+        <div>
+          @item.Id ; @item.Name ;@item.Price ; @item.Quantity ; 
+        </div>
+        <br>
+      }
+        @* <div id="cartItemsContainer"></div> *@
+    </div>
+   
+  </div>
+</div><script>
+    // Retrieve cart items from local storage
+    @* var cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Reference to the container where cart items will be displayed
+    var cartItemsContainer = document.getElementById('cartItemsContainer');
+
+    // Clear the container before adding items to prevent duplication
+    cartItemsContainer.innerHTML = '';
+
+    // Iterate over cart items and display each item
+    cartItems.forEach(function(item) {
+        // Parse the JSON string to convert it back to an object
+        var newItem = JSON.parse(item);
+        console.log(newItem);
+
+        // Create a div element to represent each cart item
+        var cartItemDiv = document.createElement('div');
+        cartItemDiv.classList.add('cart-item');
+
+        // Populate the cart item div with item details
+        cartItemDiv.innerHTML = `
+            <span>Name: ${newItem.Name}</span>
+            <span>Price: ${newItem.Price}</span>
+            <span>Quantity: ${newItem.Quantity}</span>
+            
+            <!-- Add more item details as needed -->
+        `;
+
+        // Append the cart item div to the container
+        cartItemsContainer.appendChild(cartItemDiv); *@
+    });
+</script>
